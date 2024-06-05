@@ -768,14 +768,14 @@
               <FilePath>..\..\User\main.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f4xx_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\User\stm32f4xx_it.c</FilePath>
-            </File>
-            <File>
               <FileName>mp3Player.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\User\App\mp3Player.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\User\stm32f4xx_it.c</FilePath>
             </File>
           </Files>
         </Group>
