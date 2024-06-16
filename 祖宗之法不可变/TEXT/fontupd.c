@@ -23,7 +23,7 @@ _font_info ftinfo;
 u8*const GBK24_PATH="/SYSTEM/FONT/GBK24.FON";		//GBK24的存放位置
 u8*const GBK16_PATH="/SYSTEM/FONT/GBK16.FON";		//GBK16的存放位置
 u8*const GBK12_PATH="/SYSTEM/FONT/GBK12.FON";		//GBK12的存放位置
-u8*const UNIGBK_PATH="/SYSTEM/FONT/UNIGBK.BIN";		//UNIGBK.BIN的存放位置
+u8*const UNIGBK_PATH="/SYSTEM/FONT/HZK16.bin";		//UNIGBK.BIN的存放位置
 
 //显示当前字体更新进度
 //x,y:坐标

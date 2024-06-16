@@ -69,9 +69,13 @@ u16 audio_get_tnum(u8 *path)
 void audio_index_show(u16 index,u16 total)
 {
 	//显示当前曲目的索引,及总曲目数
-	LCD_ShowxNum(60+0,230,index,3,16,0X80);		//索引
-	LCD_ShowChar(60+24,230,'/',16,0);
-	LCD_ShowxNum(60+32,230,total,3,16,0X80); 	//总曲目				  	  
+	LCD_ShowxNum(30+0,230,index,3,16,0X80);		//索引
+	LCD_ShowChar(30+24,230,'/',16,0);
+	LCD_ShowxNum(30+32,230,total,3,16,0X80); 	//总曲目				 
+  Show_Str(0,0,240,16,"测测测",16,0);
+	Show_Str(30,170,240,16,"打开MUSIC文件夹错误!",16,0);
+
+
 }
  
 //显示播放时间,比特率 信息  
@@ -80,23 +84,27 @@ void audio_index_show(u16 index,u16 total)
 //bitrate:比特率(位速)
 void audio_msg_show(u32 totsec,u32 cursec,u32 bitrate)
 {	
-	static u16 playtime=0xFFFF;//播放时间标记	      
+	static u16 playtime=0X0000;//播放时间标记	      
 	if(playtime!=cursec)					//需要更新显示时间
 	{
 		playtime=cursec;
-		//显示播放时间			 
-		LCD_ShowxNum(1,1,8,2,16,0X80);
-		LCD_ShowxNum(60,210,playtime/60,2,16,0X80);		//分钟
-		LCD_ShowChar(60+16,210,':',16,0);
-		LCD_ShowxNum(60+24,210,playtime%60,2,16,0X80);	//秒钟		
- 		LCD_ShowChar(60+40,210,'/',16,0); 	    	 
+		//显示播放时间			
+		LCD_Fill(30,190,32,206,WHITE);//进度条左边框
+		LCD_Fill(32,190,205,193,WHITE);//进度条上边框
+		LCD_Fill(32,203,205,206,WHITE);//进度条下边框
+		LCD_Fill(203,190,205,206,WHITE);//进度条右边框
+		LCD_Fill(35,195,35+(playtime*165)/totsec,201,WHITE); //进度条刷新
+		LCD_ShowxNum(30,210,playtime/60,2,16,0X80);		//分钟
+		LCD_ShowChar(30+16,210,':',16,0);
+		LCD_ShowxNum(30+24,210,playtime%60,2,16,0X80);	//秒钟		
+ 		LCD_ShowChar(30+40,210,'/',16,0); 	    	 
 		//显示总时间    	   
- 		LCD_ShowxNum(60+48,210,totsec/60,2,16,0X80);	//分钟
-		LCD_ShowChar(60+64,210,':',16,0);
-		LCD_ShowxNum(60+72,210,totsec%60,2,16,0X80);	//秒钟	  		    
+ 		LCD_ShowxNum(30+48,210,totsec/60,2,16,0X80);	//分钟
+		LCD_ShowChar(30+64,210,':',16,0);
+		LCD_ShowxNum(30+72,210,totsec%60,2,16,0X80);	//秒钟	  		    
 		//显示位率			   
-   		LCD_ShowxNum(60+110,210,bitrate/1000,4,16,0X80);//显示位率	 
-		LCD_ShowString(60+110+32,210,200,16,16,"Kbps");	 
+   		LCD_ShowxNum(30+110,210,bitrate/1000,4,16,0X80);//显示位率	 
+		LCD_ShowString(30+110+32,210,200,16,16,"Kbps");	 
 	} 		 
 }
 //播放音乐
@@ -119,17 +127,17 @@ void audio_play(void)
 	
  	while(f_opendir(&wavdir,"0:/MUSIC"))//打开音乐文件夹
  	{	    
-		Show_Str(60,190,240,16,"MUSIC212文件夹错误!",16,0);
+		Show_Str(30,170,240,16,"打开MUSIC文件夹错误!",16,0);
 		delay_ms(200);				  
-		LCD_Fill(60,190,240,206,WHITE);//清除显示	     
+		LCD_Fill(30,170,240,206,BLACK);//清除显示	     
 		delay_ms(200);				  
 	} 									  
 	totwavnum=audio_get_tnum("0:/MUSIC"); //得到总有效文件数
   	while(totwavnum==NULL)//音乐文件总数为0		
  	{	    
-		Show_Str(60,190,240,16,"没有音乐文件!",16,0);
+		Show_Str(30,170,240,16,"没有音乐文件!",16,0);
 		delay_ms(200);				  
-		LCD_Fill(60,190,240,146,WHITE);//清除显示	     
+		LCD_Fill(30,170,240,146,BLACK);//清除显示	     
 		delay_ms(200);				  
 	}										   
   	wavfileinfo.lfsize=_MAX_LFN*2+1;						//长文件名最大长度
@@ -138,9 +146,9 @@ void audio_play(void)
  	wavindextbl=mymalloc(SRAMIN,2*totwavnum);				//申请2*totwavnum个字节的内存,用于存放音乐文件索引
  	while(wavfileinfo.lfname==NULL||pname==NULL||wavindextbl==NULL)//内存分配出错
  	{	    
-		Show_Str(60,190,240,16,"内存分配失败!",16,0);
+		Show_Str(30,170,240,16,"内存分配失败!",16,0);
 		delay_ms(200);				  
-		LCD_Fill(60,190,240,146,WHITE);//清除显示	     
+		LCD_Fill(30,170,240,146,BLACK);//清除显示	     
 		delay_ms(200);				  
 	}  	 
  	//记录索引
@@ -172,8 +180,8 @@ void audio_play(void)
      	fn=(u8*)(*wavfileinfo.lfname?wavfileinfo.lfname:wavfileinfo.fname);			 
 		strcpy((char*)pname,"0:/MUSIC/");				//复制路径(目录)
 		strcat((char*)pname,(const char*)fn);  			//将文件名接在后面
- 		LCD_Fill(60,190,240,190+16,WHITE);				//清除之前的显示
-		Show_Str(60,190,240-60,16,fn,16,0);				//显示歌曲名字 
+ 		LCD_Fill(30,170,240,190+16,BLACK);				//清除之前的显示
+		Show_Str(30,170,240-60,16,fn,16,0);				//显示歌曲名字 
 		audio_index_show(curindex+1,totwavnum);
 		key=audio_play_song(pname); 			 		//播放这个音频文件
 		if(key==KEY2_PRES)		//上一曲
